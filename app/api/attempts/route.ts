@@ -31,7 +31,7 @@ export async function POST(request: Request) {
     console.error("Error creating attempt:", error);
     return NextResponse.json(
       { error: "Failed to create attempt" },
-      { status: 500 }
+      { status: 500 },
     );
   } finally {
     await prisma.$disconnect();
@@ -66,7 +66,7 @@ export async function GET() {
     console.error("Error fetching attempts:", error);
     return NextResponse.json(
       { error: "Failed to fetch attempts" },
-      { status: 500 }
+      { status: 500 },
     );
   } finally {
     await prisma.$disconnect();

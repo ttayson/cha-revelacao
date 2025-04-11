@@ -5,6 +5,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Baby } from "lucide-react";
 import { NameSuggestionModal } from "./NameSuggestionModal"; // importa aqui
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 export function GenderModal({ onVote }: { onVote?: () => void }) {
   const [isClient, setIsClient] = useState(false);
@@ -29,6 +30,9 @@ export function GenderModal({ onVote }: { onVote?: () => void }) {
       localStorage.setItem("palpite", gender);
       setShowModal(false);
 
+      // 👉 chama a função de callback, se fornecida
+      if (onVote) onVote();
+
       // 👉 abre o modal de sugestão após votar
       setTimeout(() => setShowSuggestionModal(true), 500);
     } catch (err) {
@@ -42,7 +46,8 @@ export function GenderModal({ onVote }: { onVote?: () => void }) {
     <>
       <Dialog open={showModal}>
         <DialogContent className="text-center">
-          <h2 className="text-2xl font-bold mb-4">Qual é o seu palpite?</h2>
+          <DialogTitle>Qual é o seu palpite?</DialogTitle>
+          {/* <h2 className="text-2xl font-bold mb-4">Qual é o seu palpite?</h2> */}
           <div className="flex justify-center gap-6">
             <Button
               className="bg-blue-500 text-white text-lg w-32 h-32 flex flex-col items-center justify-center rounded-full shadow-lg"

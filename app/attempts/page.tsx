@@ -25,7 +25,6 @@ export default function AttemptsPage() {
         const response = await fetch("/api/attempts");
         if (response.ok) {
           const data = await response.json();
-          console.log("Fetched attempts:", data);
           setAttempts(data);
         }
       } catch (error) {
@@ -33,7 +32,7 @@ export default function AttemptsPage() {
 
         // Fallback to localStorage if API fails
         const storedAttempts = JSON.parse(
-          localStorage.getItem("attempts") || "[]"
+          localStorage.getItem("attempts") || "[]",
         );
         setAttempts(storedAttempts);
       }
@@ -66,7 +65,7 @@ export default function AttemptsPage() {
                       {attempt.name}
                     </span>
                     <span className="text-foreground font-bold">
-                      {attempt.count} / 15 acertos
+                      {attempt.count} acertos
                       {/* {attempt.count === 1 ? "tentativa" : "tentativas"} */}
                     </span>
                   </div>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 type NameSuggestionModalProps = {
@@ -18,6 +18,7 @@ export function NameSuggestionModal({
 }: NameSuggestionModalProps) {
   const [open, setOpen] = useState(forceOpen ?? false);
   const [name, setName] = useState("");
+  const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -25,7 +26,9 @@ export function NameSuggestionModal({
   }, [forceOpen]);
 
   const handleSubmit = async () => {
-    if (!name) return;
+    if (!name || loading) return;
+
+    setLoading(true);
 
     try {
       const res = await fetch("/api/suggestname", {
@@ -55,6 +58,8 @@ export function NameSuggestionModal({
         description: "Algo deu errado. Tente novamente.",
         variant: "destructive",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -74,12 +79,23 @@ export function NameSuggestionModal({
         </p>
         <Input
           type="text"
-          placeholder={`Nome para ${gender}`}
+          placeholder={`Nome de ${gender}`}
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
-        <Button className="mt-4 w-full" onClick={handleSubmit}>
-          Enviar sugestão
+        <Button
+          className="mt-4 w-full"
+          onClick={handleSubmit}
+          disabled={loading}
+        >
+          {loading ? (
+            <span className="flex items-center justify-center gap-2">
+              <Loader2 className="animate-spin w-4 h-4" />
+              Enviando...
+            </span>
+          ) : (
+            "Enviar sugestão"
+          )}
         </Button>
       </DialogContent>
     </Dialog>

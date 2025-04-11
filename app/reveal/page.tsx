@@ -56,7 +56,7 @@ export default function RevealPage() {
   const ticketNumberRef = useRef<string>(
     Math.floor(Math.random() * 10000)
       .toString()
-      .padStart(4, "0")
+      .padStart(4, "0"),
   );
 
   useEffect(() => {
@@ -112,7 +112,7 @@ export default function RevealPage() {
         ctx.fillText(
           `É ${(babyGender || "??").toUpperCase()}!`,
           canvas.width / 2,
-          canvas.height / 2
+          canvas.height / 2,
         );
 
         ctx.strokeStyle = genderColors.accent;
@@ -131,7 +131,7 @@ export default function RevealPage() {
         ctx.fillText(
           `SÉRIE: T&T-${Date.now().toString().slice(-6)}`,
           canvas.width / 2,
-          canvas.height - 25
+          canvas.height - 25,
         );
 
         ctx.globalCompositeOperation = "source-over";
@@ -172,7 +172,7 @@ export default function RevealPage() {
 
         const getEventPosition = (
           e: MouseEvent | TouchEvent,
-          canvas: HTMLCanvasElement
+          canvas: HTMLCanvasElement,
         ) => {
           const rect = canvas.getBoundingClientRect();
           let x, y;
@@ -253,6 +253,7 @@ export default function RevealPage() {
 
     // 🔥 Remove os dados do localStorage após a revelação
     localStorage.removeItem("userData");
+    // localStorage.removeItem("palpite");
   };
 
   return (
@@ -303,7 +304,7 @@ export default function RevealPage() {
               ref={canvasRef}
               width={400}
               height={300}
-              className="w-full h-full cursor-pointer"
+              className="w-full h-full cursor-pointer touch-none"
             />
 
             {isScratched && !isRevealed && (

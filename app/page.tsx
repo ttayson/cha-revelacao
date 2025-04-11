@@ -15,11 +15,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+
 import { Baby, Heart } from "lucide-react";
 import { GenderModal } from "@/components/GenderModal";
 import Thermometer from "@/components/Thermometer";
-
-import { SimpleWordCloud } from "@/components/SimpleWordCloud";
 
 export default function Home() {
   const [name, setName] = useState("");
@@ -135,19 +141,76 @@ export default function Home() {
                 </Button>
               </form>
 
-              <div className="bg-card p-6 rounded-xl border border-accent">
-                <h3 className="text-2xl font-bold text-foreground mb-4">
-                  Sobre o Chá Revelação
-                </h3>
-                <p className="text-muted-foreground text-lg">
-                  Este é um momento único onde celebramos a vida e o amor.
-                  Responda corretamente às perguntas sobre o casal T&T e
-                  descubra se o novo membro da família será um menino ou uma
-                  menina. Cada resposta certa nos aproxima do grande momento da
-                  revelação!
-                </p>
-                {/* <SimpleWordCloud words={words} /> */}
-              </div>
+              <Carousel className="w-full">
+                <CarouselContent>
+                  {/* Slide 1: Sobre o Chá Revelação */}
+                  <CarouselItem>
+                    <div className="bg-card p-6 rounded-xl border border-accent">
+                      <h3 className="text-2xl font-bold text-foreground mb-4">
+                        Sobre o Chá Revelação
+                      </h3>
+                      <p className="text-muted-foreground text-lg">
+                        Este é um momento único onde celebramos a vida e o amor.
+                        Responda corretamente às perguntas sobre o casal T&T e
+                        descubra se o novo membro da família será um menino ou
+                        uma menina. Cada resposta certa nos aproxima do grande
+                        momento da revelação!
+                      </p>
+                    </div>
+                  </CarouselItem>
+
+                  {/* Slide 2: WordCloud */}
+                  <CarouselItem>
+                    <div className="bg-card p-6 rounded-xl border border-accent">
+                      <h3 className="text-2xl font-bold text-foreground mb-4">
+                        Nomes mais apostados!
+                      </h3>
+                      {words.length > 0 ? (
+                        <div className="overflow-auto max-h-64">
+                          <table className="w-full text-left border-collapse">
+                            <thead>
+                              <tr>
+                                <th className="py-2 px-4 border-b text-foreground text-sm">
+                                  #
+                                </th>
+                                <th className="py-2 px-4 border-b text-foreground text-sm">
+                                  Nome
+                                </th>
+                                <th className="py-2 px-4 border-b text-foreground text-sm">
+                                  Votos
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {words.map((word, index) => (
+                                <tr key={index}>
+                                  <td className="py-2 px-4 border-b text-muted-foreground text-sm">
+                                    {index + 1}
+                                  </td>
+                                  <td className="py-2 px-4 border-b text-foreground font-medium text-sm">
+                                    {word.text}
+                                  </td>
+                                  <td className="py-2 px-4 border-b text-muted-foreground text-sm">
+                                    {word.value}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      ) : (
+                        <p className="text-muted-foreground">
+                          Nenhum nome registrado ainda!
+                        </p>
+                      )}
+                    </div>
+                  </CarouselItem>
+                </CarouselContent>
+                <div className="flex justify-center gap-5 mt-6 relative z-10">
+                  <CarouselPrevious className="static w-auto" />
+                  <CarouselNext className="static w-auto" />
+                </div>
+              </Carousel>
             </div>
 
             <div>
@@ -217,7 +280,7 @@ function RankingList() {
       } catch (error) {
         if (typeof window !== "undefined") {
           const storedRanking = JSON.parse(
-            localStorage.getItem("ranking") || "[]"
+            localStorage.getItem("ranking") || "[]",
           );
           setRanking(storedRanking);
         }
