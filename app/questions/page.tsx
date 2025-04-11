@@ -15,7 +15,6 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Stars, Heart, Gift, Cake, Sparkles, Baby } from "lucide-react";
 
-// Mock questions
 const questions = [
   {
     id: 1,
@@ -94,6 +93,7 @@ export default function QuestionsPage() {
   const [showResult, setShowResult] = useState(false);
   const [userName, setUserName] = useState("");
   const [userId, setUserId] = useState("");
+  const [flashColor, setFlashColor] = useState<"green" | "red" | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -107,12 +107,7 @@ export default function QuestionsPage() {
     }
   }, [router]);
 
-  const handleAnswerSubmit = async () => {
-    if (selectedAnswer === questions[currentQuestion].answer) {
-      setCorrectAnswers(correctAnswers + 1);
-    }
-
-    // Save attempt in API
+  const saveAttempt = async (isCorrect: boolean) => {
     try {
       await fetch("/api/attempts", {
         method: "POST",
@@ -124,13 +119,12 @@ export default function QuestionsPage() {
           id: userId,
           questionId: questions[currentQuestion].id,
           answer: selectedAnswer,
-          isCorrect: selectedAnswer === questions[currentQuestion].answer,
+          isCorrect,
         }),
       });
     } catch (error) {
       console.error("Error saving attempt:", error);
 
-      // Fallback to localStorage if API fails
       const attempts = JSON.parse(localStorage.getItem("attempts") || "[]");
       const userAttempt = attempts.find((a: any) => a.name === userName);
 
@@ -142,13 +136,24 @@ export default function QuestionsPage() {
 
       localStorage.setItem("attempts", JSON.stringify(attempts));
     }
+  };
 
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-      setSelectedAnswer("");
-    } else {
-      setShowResult(true);
-    }
+  const handleAnswerSubmit = () => {
+    const isCorrect = selectedAnswer === questions[currentQuestion].answer;
+    setFlashColor(isCorrect ? "green" : "red");
+
+    setTimeout(() => {
+      setFlashColor(null);
+      if (isCorrect) setCorrectAnswers((prev) => prev + 1);
+      saveAttempt(isCorrect);
+
+      if (currentQuestion < questions.length - 1) {
+        setCurrentQuestion((prev) => prev + 1);
+        setSelectedAnswer("");
+      } else {
+        setShowResult(true);
+      }
+    }, 600);
   };
 
   const handleRestart = () => {
@@ -159,7 +164,6 @@ export default function QuestionsPage() {
   };
 
   const handleReveal = () => {
-    // If all answers are correct, go to reveal page
     if (correctAnswers === questions.length) {
       router.push("/reveal");
     }
@@ -231,7 +235,15 @@ export default function QuestionsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8 flex items-center justify-center">
+    <div
+      className={`min-h-screen p-4 md:p-8 flex items-center justify-center transition-colors duration-300 ${
+        flashColor === "green"
+          ? "bg-green-200"
+          : flashColor === "red"
+          ? "bg-red-200"
+          : "bg-background"
+      }`}
+    >
       <div className="max-w-2xl w-full">
         <Card className="border-2 border-accent bg-card rounded-2xl shadow-md">
           <CardHeader className="bg-primary rounded-t-xl">
