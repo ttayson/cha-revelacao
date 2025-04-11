@@ -182,16 +182,16 @@ export default function Home() {
                               </tr>
                             </thead>
                             <tbody>
-                              {words.map((word, index) => (
+                              {words?.map((word, index) => (
                                 <tr key={index}>
                                   <td className="py-2 px-4 border-b text-muted-foreground text-sm">
                                     {index + 1}
                                   </td>
                                   <td className="py-2 px-4 border-b text-foreground font-medium text-sm">
-                                    {word.text}
+                                    {word?.text?.toUpperCase() || "-"}
                                   </td>
                                   <td className="py-2 px-4 border-b text-muted-foreground text-sm">
-                                    {word.value}
+                                    {word?.value || 0}
                                   </td>
                                 </tr>
                               ))}
@@ -280,7 +280,7 @@ function RankingList() {
       } catch (error) {
         if (typeof window !== "undefined") {
           const storedRanking = JSON.parse(
-            localStorage.getItem("ranking") || "[]",
+            localStorage.getItem("ranking") || "[]"
           );
           setRanking(storedRanking);
         }
