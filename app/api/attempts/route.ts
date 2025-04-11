@@ -31,7 +31,7 @@ export async function POST(request: Request) {
     console.error("Error creating attempt:", error);
     return NextResponse.json(
       { error: "Failed to create attempt" },
-      { status: 500 },
+      { status: 500 }
     );
   } finally {
     await prisma.$disconnect();
@@ -42,6 +42,9 @@ export async function GET() {
   try {
     // Get all users with their attempt counts
     const users = await prisma.user.findMany({
+      orderBy: {
+        createdAt: "asc",
+      },
       include: {
         _count: {
           select: {
@@ -52,8 +55,6 @@ export async function GET() {
         },
       },
     });
-
-    console.log("Fetched users:", users);
 
     // Format the data
     const attempts = users.map((user) => ({
@@ -66,7 +67,7 @@ export async function GET() {
     console.error("Error fetching attempts:", error);
     return NextResponse.json(
       { error: "Failed to fetch attempts" },
-      { status: 500 },
+      { status: 500 }
     );
   } finally {
     await prisma.$disconnect();
